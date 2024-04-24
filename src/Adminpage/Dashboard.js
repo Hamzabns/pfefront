@@ -2,12 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
 import { FaUsers } from 'react-icons/fa';
-import { MdCheckCircle, MdCancel } from 'react-icons/md';
-import { Button, Modal } from 'react-bootstrap'; 
-/* src/index.css */
-// import '../Styles/tailwind.css';
-
-// Import Button and Modal components from react-bootstrap
+import { Button, Modal } from 'react-bootstrap';
+import './dashboard.css';
 
 const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
@@ -19,6 +15,9 @@ const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userPointings, setUserPointings] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(10);
+
   const fetchData = async (date) => {
     try {
       const authToken = localStorage.getItem('authToken');
@@ -51,37 +50,36 @@ const Dashboard = () => {
   }, [selectedDate]);
 
   const handlepointageClick = async (user) => {
-  setSelectedUser(user);
-  setShowModal(true);
+    setSelectedUser(user);
+    setShowModal(true);
 
-  try {
-    // Call fetchUserPointings to retrieve pointings for the selected user
-    await fetchUserPointings(user.user_id); // Assuming user_id is available in your user object
-  } catch (error) {
-    console.error('Failed to fetch user pointings:', error);
-  }
-};
-
-const fetchUserPointings = async (userId) => {
-  try {
-    const authToken = localStorage.getItem('authToken');
-    if (!authToken) {
-      throw new Error('Authentication token not found');
+    try {
+      await fetchUserPointings(user.user_id);
+    } catch (error) {
+      console.error('Failed to fetch user pointings:', error);
     }
+  };
 
-    const response = await axios.post(
-      `${API_BASE_URL}/api/admin/alluserpointage`,
-      { date: selectedDate, userId },
-      { headers: { Authorization: `Bearer ${authToken}` } }
-    );
+  const fetchUserPointings = async (userId) => {
+    try {
+      const authToken = localStorage.getItem('authToken');
+      if (!authToken) {
+        throw new Error('Authentication token not found');
+      }
 
-    const userPointings = response.data.user_pointings.find(pointing => pointing.user_id === userId);
-    setUserPointings(userPointings || []);
-  } catch (error) {
-    console.error('Failed to fetch user pointings:', error);
-    setUserPointings([]);
-  }
-};
+      const response = await axios.post(
+        `${API_BASE_URL}/api/admin/alluserpointage`,
+        { date: selectedDate, userId },
+        { headers: { Authorization: `Bearer ${authToken}` } }
+      );
+
+      const userPointings = response.data.user_pointings.find(pointing => pointing.user_id === userId);
+      setUserPointings(userPointings || []);
+    } catch (error) {
+      console.error('Failed to fetch user pointings:', error);
+      setUserPointings([]);
+    }
+  };
 
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
@@ -95,48 +93,54 @@ const fetchUserPointings = async (userId) => {
     return availability === 'available' ? '✔️' : '❌';
   };
 
-  
+  // Pagination logic
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = allUsersData.slice(indexOfFirstUser, indexOfLastUser);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div>
-      <div className="statique" >
+      <div className="statique">
         <div>
-          <span style={{ marginRight: '20px' }}>
-            <FaUsers style={{ fontSize: '24px' }} /> Total Users: {userCount}
+          <span className='pourcentage' style={{ marginRight: '20px' }}>
+            <FaUsers style={{ fontSize: '24px' }} /> Total des utilisateurs : {userCount}
           </span>
-          <span style={{ marginRight: '20px' }}>
-            <FaUsers style={{ fontSize: '24px', color: 'red' }} /> Total Users Not Present: {usersNotPresentCount}
+          <span className='pourcentage' style={{ marginRight: '20px' }}>
+            <FaUsers style={{ fontSize: '24px', color: 'red' }} /> Total des utilisateurs absents : {usersNotPresentCount}
           </span>
-          <span>
-            <FaUsers style={{ fontSize: '24px', color: 'green' }} /> Total Users Present: {presentUserCount}
+          <span className='pourcentage'>
+            <FaUsers style={{ fontSize: '24px', color: 'green' }} /> Total des utilisateurs présents : {presentUserCount}
           </span>
           <br />
-          <span>Percentage of Users Present: {percentagePresent.toFixed(2)}%</span>
+          <span className='pourcentage'>Pourcentage des utilisateurs présents : {percentagePresent.toFixed(2)}%</span>
         </div>
       </div>
-
+  
       <div style={{ marginTop: '20px' }}>
-        <label htmlFor="datePicker">Select Date:</label>
-        <input type="date" id="datePicker" value={selectedDate} onChange={handleDateChange} />
+        <label htmlFor="datePicker">Sélectionnez la date :</label>
+        <input className="date" type="date" id="datePicker" value={selectedDate} onChange={handleDateChange} />
       </div>
-
+  
       <div style={{ marginTop: '20px' }}>
-        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+        <table className="usetab" style={{ borderCollapse: 'collapse', width: '100%' }}>
           <thead>
             <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Cin</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>First Name</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Last Name</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Cin</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Prénom</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Nom de famille</th>
               <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>email</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Tel</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Status</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Availability</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Heurs travailler</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Téléphone</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Statut</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Disponibilité</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Heures travaillées</th>
               <th style={{ border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2', color: 'black' }}>Action</th>
             </tr>
           </thead>
           <tbody>
-            {allUsersData.map((user) => (
+            {currentUsers.map((user) => (
               <tr key={user.user_id} style={{ backgroundColor: 'white' }} onMouseOver={(e) => { e.target.parentNode.style.backgroundColor = '#f2f2f2'; }} onMouseOut={(e) => { e.target.parentNode.style.backgroundColor = 'white'; }}>
                 <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.cin}</td>
                 <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.firstname}</td>
@@ -147,59 +151,62 @@ const fetchUserPointings = async (userId) => {
                 <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{renderAvailabilityIcon(user.availability)}</td>
                 <td style={{ border: '1px solid #ddd', padding: '8px', fontWeight: 'bold', color: 'black', textAlign: 'center' }}>{user.time_worked}</td>
                 <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                  <Button variant="primary" onClick={() => handlepointageClick(user)}>DETAIL</Button>
+                  <Button variant="primary" onClick={() => handlepointageClick(user)}>DÉTAILS</Button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-
-        {/* Modal for User Details */}
-        <Modal show={showModal} onHide={() => setShowModal(false)}>
-  <Modal.Header closeButton>
-    <Modal.Title>Pointage Details</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    {selectedUser && (
-      <div>
-        <p ><strong style={{ fontWeight: 'bold' }}>Employee: </strong> {selectedUser.firstname} {selectedUser.lastname}</p>
-        <p><strong style={{ fontWeight: 'bold' }}>Hours Worked: </strong> {selectedUser.time_worked}</p>
-        <p><strong  style={{ fontWeight: 'bold',marginLeft:'160px' }}>Date:</strong>{selectedDate}</p>
-        <div style={{ marginTop: '20px' }}>
-          {/* <h5 style={{marginLeft:'30px' }}>Pointings</h5> */}
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'center', }}>Entre</th>
-                <th style={{ textAlign: 'center', }}>Sortie</th>
-              </tr>
-            </thead>
-            <tbody>
-              {userPointings.entre && userPointings.sortie ? (
-                userPointings.entre.map((entre, index) => (
-                  <tr key={index}>
-                  <td>{new Date(entre).toLocaleTimeString()}</td>
-                  <td>{new Date(userPointings.sortie[index]).toLocaleTimeString()}</td>
-                </tr>
-                  
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="2">No pointings available</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+  
+        {/* Pagination */}
+        <div className="pagination">
+          {Array.from({ length: Math.ceil(allUsersData.length / usersPerPage) }, (_, i) => (
+            <button key={i + 1} onClick={() => paginate(i + 1)}>
+              {i + 1}
+            </button>
+          ))}
         </div>
       </div>
-    )}
-  </Modal.Body>
-  {/* <Modal.Footer>
-    <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
-  </Modal.Footer> */}
-</Modal>
 
-      </div>
+      {/* Modal for User Details */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Détails du pointage</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedUser && (
+            <div>
+              <p ><strong style={{ fontWeight: 'bold' }}>Employé : </strong> {selectedUser.firstname} {selectedUser.lastname}</p>
+              <p><strong style={{ fontWeight: 'bold' }}>Heures travaillées : </strong> {selectedUser.time_worked}</p>
+              <p><strong style={{ fontWeight: 'bold', marginLeft: '160px' }}>Date :</strong>{selectedDate}</p>
+              <div style={{ marginTop: '20px' }}>
+                <table className="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: 'center', }}>Entrée</th>
+                      <th style={{ textAlign: 'center', }}>Sortie</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userPointings.entre && userPointings.sortie ? (
+                      userPointings.entre.map((entre, index) => (
+                        <tr key={index}>
+                          <td>{new Date(entre).toLocaleTimeString()}</td>
+                          <td>{new Date(userPointings.sortie[index]).toLocaleTimeString()}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="2">Aucun pointage disponible</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

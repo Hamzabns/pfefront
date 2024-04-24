@@ -110,20 +110,20 @@ const Conge = () => {
   return (
     <div className="conge-container">
       {loading ? (
-        <div>Loading...</div>
+        <div>Chargement en cours...</div>
       ) : (
         <div className="table-container">
           <table className="table table-striped">
             <thead>
               <tr>
-                <th>User</th>
-                <th>Solde Conge</th>
+                <th>Utilisateur</th>
+                <th>Solde Congé</th>
                 <th>Date Début</th>
                 <th>Date Fin</th>
                 <th>Motif</th>
                 <th>Description</th>
                 <th>Solde Demandée</th>
-                <th>Status</th>
+                <th>Statut</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -140,9 +140,9 @@ const Conge = () => {
                   <td>{demande.status}</td>
                   <td>
                     {demande.status === 'refuser' ? (
-                      <button className="btn btn-view-reason" onClick={() => openViewReasonModal(demande.refuse_reason)}>View Reason</button>
+                      <button className="btn btn-view-reason" onClick={() => openViewReasonModal(demande.refuse_reason)}>Voir la raison</button>
                     ) : demande.status === 'accepter' ? (
-                      <button className="btn btn-view-reasons" >Accepted</button>
+                      <button className="btn btn-view-reasons" >Acceptée</button>
                     ) : (
                       <div className="button-container">
                         <button className="btn btn-accept" onClick={() => handleAcceptDemande(demande.id)}>Accepter</button>
@@ -160,20 +160,20 @@ const Conge = () => {
       {/* Modal for entering refuse reason */}
       <Modal show={modalIsOpen} onHide={closeModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Refuse Demande</Modal.Title>
+          <Modal.Title>Refuser la demande</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group controlId="refuseReason">
-            <Form.Label>Enter refuse reason:</Form.Label>
+            <Form.Label>Entrez la raison du refus :</Form.Label>
             <Form.Control as="textarea" value={refuseReason} onChange={(e) => setRefuseReason(e.target.value)} />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={closeModal}>
-            Cancel
+            Annuler
           </Button>
           <Button variant="danger" onClick={handleRefuseDemande}>
-            Confirm Refusal
+            Confirmer le refus
           </Button>
         </Modal.Footer>
       </Modal>
@@ -181,14 +181,14 @@ const Conge = () => {
       {/* Modal for viewing refusal reason */}
       <Modal show={viewReasonModalIsOpen} onHide={closeViewReasonModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Refusal Reason</Modal.Title>
+          <Modal.Title>Raison du refus</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>{refuseReason}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={closeViewReasonModal}>
-            Close
+            Fermer
           </Button>
         </Modal.Footer>
       </Modal>

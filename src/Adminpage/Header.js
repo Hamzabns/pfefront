@@ -62,13 +62,13 @@ const Header = () => {
         <div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`}>
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link" to="/Dashboard"><BsHouseDoor /> Home</Link>
+              <Link className="nav-link" to="/Dashboard"><BsHouseDoor /> Acceuil</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/users"><BsPeople /> Users</Link>
+              <Link className="nav-link" to="/users"><BsPeople /> Utilisateurs</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/Conge"><FaCalendarAlt /> Conge</Link>
+              <Link className="nav-link" to="/Conge"><FaCalendarAlt /> Congés</Link>
             </li>
             <li className="nav-item">
             <Link className="nav-link" to="/motif"><FaCalendarAlt /> Motif</Link>
@@ -85,7 +85,7 @@ const Header = () => {
                   <ul className="list-unstyled">
                     <li className="mb-2">
                       <button className="btn btn-danger" onClick={handleLogout}>
-                        Logout
+                        Déconnecter
                       </button>
                     </li>
                     {/* Add other menu items here */}

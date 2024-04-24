@@ -22,11 +22,15 @@
   text-align: center;
 }
 .statique {
-  position: absolute;
-  top: 80px;
-  right: 10px;
+  position: relative;
+  margin-top:38%;
   padding: 10px;
   display: flex;
+  margin-Bottom: 10px;
+  
+
+
+
 }
 
 .dashboard-stats {
@@ -40,4 +44,22 @@
 
 .green {
   color: green;
+}
+.date{
+  width:min-content;
+  margin:10px;
+}
+.pourcentage{
+  font-weight:light; /* Bold font weight */
+  color:rgb(0, 0, 0);
+  font-size: 22px;
+  font-family: Arial, sans-serif;
+
+}
+.usetab{
+  text-align: center;
+  font-size: 19px;
+  color: black;
+  padding: 3px 40px;
+  display:inline-block;
 }

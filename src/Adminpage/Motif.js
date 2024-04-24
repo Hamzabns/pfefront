@@ -117,7 +117,7 @@ const Motif = () => {
       <h2>Motifs</h2>
       {error && <p>{error}</p>}
 
-      <Button variant="primary" onClick={() => setShowAddModal(true)}>Add Motif</Button>
+      <Button variant="primary" onClick={() => setShowAddModal(true)}>Ajoutez Motif</Button>
 
       <Table striped bordered hover>
         <thead>
@@ -133,8 +133,8 @@ const Motif = () => {
               <td>{index + 1}</td>
               <td>{motif.motif_name}</td>
               <td>
-                <Button variant="info" onClick={() => openEditModal(motif.id, motif.motif_name)}>Edit</Button>
-                <Button variant="danger" onClick={() => handleDeleteMotif(motif.id)}>Delete</Button>
+                <Button variant="info" onClick={() => openEditModal(motif.id, motif.motif_name)}>Modifier</Button>
+                <Button variant="danger" onClick={() => handleDeleteMotif(motif.id)}>Supprimer</Button>
               </td>
             </tr>
           ))}
@@ -143,11 +143,11 @@ const Motif = () => {
 
       <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Add Motif</Modal.Title>
+          <Modal.Title>Ajoutez Motif</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group>
-            <Form.Label>Motif Name</Form.Label>
+            <Form.Label>Motif </Form.Label>
             <Form.Control
               type="text"
               value={newMotifName}
@@ -163,11 +163,11 @@ const Motif = () => {
 
       <Modal show={!!editMotifId} onHide={closeEditModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Motif</Modal.Title>
+          <Modal.Title>Modifier Motif</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group>
-            <Form.Label>Motif Name</Form.Label>
+            <Form.Label>Motif </Form.Label>
             <Form.Control
               type="text"
               value={editMotifName}
@@ -176,8 +176,8 @@ const Motif = () => {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={closeEditModal}>Close</Button>
-          <Button variant="primary" onClick={handleEditMotif}>Save</Button>
+          <Button variant="secondary" onClick={closeEditModal}>Fermer</Button>
+          <Button variant="primary" onClick={handleEditMotif}>Enregistrer</Button>
         </Modal.Footer>
       </Modal>
     </div>

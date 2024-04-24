@@ -231,110 +231,111 @@ const UserManagement = () => {
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Chargement en cours...</div>;
   }
 
   return (
     <div className="user-container">
-      <input
+      <input className="searchinput"
         type="text"
-        placeholder="Search by name or email"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      <Button variant="primary" onClick={() => setShowModal(true)} style={{ marginBottom: '10px' }}>
-        Add User
+        placeholder="Rechercher par nom ou email"
+value={searchTerm}
+onChange={(e) => setSearchTerm(e.target.value)}
+/>
+<Button variant="primary" onClick={() => setShowModal(true)} style={{ marginBottom: '10px' }}>
+Ajouter un utilisateur
+</Button>
+
+<Modal show={showModal} onHide={handleClose}>
+    <Modal.Header closeButton>
+      <Modal.Title>{editingUser ? 'Modifier l\'utilisateur' : 'Ajouter un nouvel utilisateur'}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <Form>
+        <Form.Group controlId="cin">
+          <Form.Label>CIN</Form.Label>
+          <Form.Control type="text" name="cin" value={formData.cin} onChange={handleInputChange} />
+        </Form.Group>
+        <Form.Group controlId="firstname">
+          <Form.Label>Prénom</Form.Label>
+          <Form.Control type="text" name="firstname" value={formData.firstname} onChange={handleInputChange} />
+        </Form.Group>
+        <Form.Group controlId="lastname">
+          <Form.Label>Nom de famille</Form.Label>
+          <Form.Control type="text" name="lastname" value={formData.lastname} onChange={handleInputChange} />
+        </Form.Group>
+        <Form.Group controlId="email">
+          <Form.Label>Email</Form.Label>
+          <Form.Control type="email" name="email" value={formData.email} onChange={handleInputChange} />
+        </Form.Group>
+        <Form.Group controlId="tel">
+          <Form.Label>Numéro de téléphone</Form.Label>
+          <Form.Control type="text" name="tel" value={formData.tel} onChange={handleInputChange} />
+        </Form.Group>
+        <Form.Group controlId="adresse">
+          <Form.Label>Adresse</Form.Label>
+          <Form.Control type="text" name="adresse" value={formData.adresse} onChange={handleInputChange} />
+        </Form.Group>
+        <Form.Group controlId="genre">
+          <Form.Label>Genre</Form.Label>
+          <Form.Control as="select" name="genre" value={formData.genre} onChange={handleInputChange}>
+            <option value="homme">Homme</option>
+            <option value="femme">Femme</option>
+          </Form.Control>
+        </Form.Group>
+      </Form>
+    </Modal.Body>
+    <Modal.Footer>
+      <Button variant="secondary" onClick={handleClose}>Fermer</Button>
+      <Button variant="primary" onClick={editingUser ? handleUpdateUser : handleAddUser}>
+        {editingUser ? 'Mettre à jour l\'utilisateur' : 'Ajouter l\'utilisateur'}
       </Button>
+    </Modal.Footer>
+  </Modal>
 
-      <Modal show={showModal} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{editingUser ? 'Edit User' : 'Add New User'}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="cin">
-              <Form.Label>CIN</Form.Label>
-              <Form.Control type="text" name="cin" value={formData.cin} onChange={handleInputChange} />
-            </Form.Group>
-            <Form.Group controlId="firstname">
-              <Form.Label>First Name</Form.Label>
-              <Form.Control type="text" name="firstname" value={formData.firstname} onChange={handleInputChange} />
-            </Form.Group>
-            <Form.Group controlId="lastname">
-              <Form.Label>Last Name</Form.Label>
-              <Form.Control type="text" name="lastname" value={formData.lastname} onChange={handleInputChange} />
-            </Form.Group>
-            <Form.Group controlId="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" name="email" value={formData.email} onChange={handleInputChange} />
-            </Form.Group>
-            <Form.Group controlId="tel">
-              <Form.Label>Phone Number</Form.Label>
-              <Form.Control type="text" name="tel" value={formData.tel} onChange={handleInputChange} />
-            </Form.Group>
-            <Form.Group controlId="adresse">
-              <Form.Label>Address</Form.Label>
-              <Form.Control type="text" name="adresse" value={formData.adresse} onChange={handleInputChange} />
-            </Form.Group>
-            <Form.Group controlId="genre">
-              <Form.Label>Gender</Form.Label>
-              <Form.Control as="select" name="genre" value={formData.genre} onChange={handleInputChange}>
-                <option value="men">Men</option>
-                <option value="women">Women</option>
-              </Form.Control>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>Close</Button>
-          <Button variant="primary" onClick={editingUser ? handleUpdateUser : handleAddUser}>
-            {editingUser ? 'Update User' : 'Add User'}
-          </Button>
-        </Modal.Footer>
-      </Modal>
+  <table className="user-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>CIN</th>
+        <th>Prénom</th>
+        <th>Nom de famille</th>
+        <th>Email</th>
+        <th>Numéro de téléphone</th>
+        <th>Adresse</th>
+        <th>Genre</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {currentUsers.map((user, index) => (
+        <tr key={user.id}>
+          <td>{indexOfFirstUser + index + 1}</td>
+          <td>{user.cin}</td>
+          <td>{user.prenom}</td>
+          <td>{user.nom}</td>
+          <td>{user.email}</td>
+          <td>{user.tel}</td>
+          <td>{user.adresse}</td>
+          <td>{user.genre}</td>
+          <td>
+            <MdEdit className="edit-button" onClick={() => handleEditUser(user)} />
+            <MdDelete className="delete-button" onClick={() => handleDeleteUser(user.id)} />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
 
-      <table className="user-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>CIN</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Address</th>
-            <th>Gender</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentUsers.map((user, index) => (
-            <tr key={user.id}>
-              <td>{indexOfFirstUser + index + 1}</td>
-              <td>{user.cin}</td>
-              <td>{user.firstname}</td>
-              <td>{user.lastname}</td>
-              <td>{user.email}</td>
-              <td>{user.tel}</td>
-              <td>{user.adresse}</td>
-              <td>{user.genre}</td>
-              <td>
-                <MdEdit className="edit-button" onClick={() => handleEditUser(user)} />
-                <MdDelete className="delete-button" onClick={() => handleDeleteUser(user.id)} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+  <div className="pagination">
+    {Array.from({ length: Math.ceil(filteredUsers.length / usersPerPage) }, (_, i) => (
+      <button key={i + 1} onClick={() => paginate(i + 1)}>
+        {i + 1}
+      </button>
+    ))}
+  </div>
+</div>
 
-      <div className="pagination">
-        {Array.from({ length: Math.ceil(filteredUsers.length / usersPerPage) }, (_, i) => (
-          <button key={i + 1} onClick={() => paginate(i + 1)}>
-            {i + 1}
-          </button>
-        ))}
-      </div>
-    </div>
   );
 };
 

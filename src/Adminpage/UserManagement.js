@@ -171,7 +171,7 @@ const UserManagement = () => {
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <table className="user-table" style={{ marginTop: '20px', marginLeft: 'auto', marginRight: 'auto' }}>
+        <table className="user-table" style={{ marginTop: '20px', marginLeft: 'auto', marginRight: '***' }}>
           <thead>
             <tr>
               <th>First Name</th>
